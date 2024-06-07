@@ -1,6 +1,6 @@
-pipeline{
-    agent{
-        kubernetes{
+pipeline {
+    agent {
+        kubernetes {
             label "recipes-project-agent"
             idleMinutes 5
             yamlFile 'build-pod.yaml'
@@ -8,21 +8,21 @@ pipeline{
         }
     }
 
-    environment{
+    environment {
         DOCKER_IMAGE = 'winterzone2/recipes-project'
         GITHUB_API_URL = 'https://api.github.com'
         GITHUB_REPO = 'DaryAkerman/recipes-project'
         GITHUB_TOKEN = credentials('github-creds')
     }
 
-    stages{
-        stage("Checkout code"){
+    stages {
+        stage("Checkout code") {
             steps {
                 checkout scm
             }
         }
 
-        stage("Build docker image"){
+        stage("Build docker image") {
             steps {
                 script {
                     dockerImage = docker.build("${DOCKER_IMAGE}:latest", "--no-cache .")
@@ -43,23 +43,25 @@ pipeline{
             }
         }
 
-        stage('Create merge request'){
+        stage('Create merge request') {
             when {
                 not {
                     branch 'main'
                 }
             }
             steps {
-                script {
-                    def branchName = env.BRANCH_NAME
-                    def pullRequestTitle = "Merge ${branchName} into main"
-                    def pullRequestBody = "Automatically generated merge request for branch ${branchName}"
+                withCredentials([string(credentialsId: 'github-creds', variable: 'GITHUB_TOKEN')]) {
+                    script {
+                        def branchName = env.BRANCH_NAME
+                        def pullRequestTitle = "Merge ${branchName} into main"
+                        def pullRequestBody = "Automatically generated merge request for branch ${branchName}"
 
-                    sh """
-                        curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
-                        -d '{ "title": "${pullRequestTitle}", "body": "${pullRequestBody}", "head": "${branchName}", "base": "main" }' \
-                        ${GITHUB_API_URL}/repos/${GITHUB_REPO}/pulls
-                    """
+                        sh """
+                            curl -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
+                            -d '{ "title": "${pullRequestTitle}", "body": "${pullRequestBody}", "head": "${branchName}", "base": "main" }' \
+                            ${GITHUB_API_URL}/repos/${GITHUB_REPO}/pulls
+                        """
+                    }
                 }
             }
         }
