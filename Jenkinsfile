@@ -1,6 +1,6 @@
-pipeline {
-    agent {
-        kubernetes {
+pipeline{
+    agent{
+        kubernetes{
             label "recipes-project-agent"
             idleMinutes 5
             yamlFile 'build-pod.yaml'
@@ -8,21 +8,21 @@ pipeline {
         }
     }
 
-    environment {
+    environment{
         DOCKER_IMAGE = 'winterzone2/recipes-project'
         GITHUB_API_URL = 'https://api.github.com'
         GITHUB_REPO = 'DaryAkerman/recipes-project'
         GITHUB_TOKEN = credentials('github-creds')
     }
 
-    stages {
-        stage("Checkout code") {
+    stages{
+        stage("Checkout code"){
             steps {
                 checkout scm
             }
         }
 
-        stage("Build docker image") {
+        stage("Build docker image"){
             steps {
                 script {
                     dockerImage = docker.build("${DOCKER_IMAGE}:latest", "--no-cache .")
@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-        stage('Create merge request') {
+        stage('Create merge request'){
             when {
                 not {
                     branch 'main'
