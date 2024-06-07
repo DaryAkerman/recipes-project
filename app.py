@@ -9,6 +9,29 @@ client = MongoClient('mongodb://mongo:27017/')
 db = client.recipes_db
 recipes_collection = db.recipes
 
+# Default recipes to add
+default_recipes = [
+    {
+        'name': 'Pasta',
+        'ingredients': 'Pasta, Tomato Sauce, Olive Oil, Garlic, Basil',
+        'instructions': 'Boil pasta. Heat sauce with olive oil and garlic. Mix with pasta and garnish with basil.'
+    },
+    {
+        'name': 'Chicken Salad',
+        'ingredients': 'Chicken, Lettuce, Tomato, Cucumber, Olive Oil, Lemon Juice',
+        'instructions': 'Cook chicken. Mix with chopped vegetables. Dress with olive oil and lemon juice.'
+    },
+    {
+        'name': 'Chocolate Cake',
+        'ingredients': 'Flour, Sugar, Cocoa Powder, Baking Powder, Eggs, Milk, Butter',
+        'instructions': 'Mix dry ingredients. Add eggs, milk, and butter. Bake at 350°F for 30 minutes.'
+    }
+]
+
+# Insert default recipes if the collection is empty
+if recipes_collection.count_documents({}) == 0:
+    recipes_collection.insert_many(default_recipes)
+
 @app.route('/')
 def index():
     recipes = recipes_collection.find()
