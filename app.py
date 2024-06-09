@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
-#TESTING MY FEATURE BRANCH
+#TESTING
 # Connect to MongoDB
 client = MongoClient('mongodb://mongo:27017/')
 db = client.recipes_db
