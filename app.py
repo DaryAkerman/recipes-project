@@ -3,13 +3,10 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
-#TESTING
-# Connect to MongoDB
 client = MongoClient('mongodb://mongo:27017/')
 db = client.recipes_db
 recipes_collection = db.recipes
 
-# Default recipes to add
 default_recipes = [
     {
         'name': 'Pasta',
@@ -28,7 +25,6 @@ default_recipes = [
     }
 ]
 
-# Insert default recipes if the collection is empty
 if recipes_collection.count_documents({}) == 0:
     recipes_collection.insert_many(default_recipes)
 
