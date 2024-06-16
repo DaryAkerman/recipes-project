@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: recipes-dary-project-release
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/DaryAkerman/recipes-project
+    targetRevision: HEAD
+    path: ./recipes-dary-project
+    helm:
+      parameters:
+        - name: image.repository
+          value: winterzone2/recipes-project
+        - name: image.tag
+          value: latest
+        - name: image.pullPolicy
+          value: Always
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
