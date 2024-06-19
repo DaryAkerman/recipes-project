@@ -1,0 +1,29 @@
+additionalPrometheusRulesMap:
+  rule-name:
+    groups:
+    - name: project
+      rules:
+      - alert: LowRunningPodsCount
+        expr: count(kube_pod_status_phase{namespace="default", pod=~"recipes-dary-project-release.*", phase="Running"}) < 4
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low number of running pods"
+          description: "The count of running pods matching 'recipes-dary-project-release*' in namespace 'default' is below 4."
+      - alert: HighCpuUsage
+        expr: sum(rate(container_cpu_usage_seconds_total{namespace="default", container!="", pod=~"recipes-dary-project-release.*"}[5m])) by (pod) / sum(kube_pod_container_resource_limits_cpu_cores{namespace="default", container!="", pod=~"recipes-dary-project-release.*"}) by (pod) > 0.2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage for one or more pods matching 'recipes-dary-project-release*' in namespace 'default' is above 80% of its limit."
+      - alert: LowCpuUsage
+        expr: sum(rate(container_cpu_usage_seconds_total{namespace="default", container!="", pod=~"recipes-dary-project-release.*"}[5m])) by (pod) / sum(kube_pod_container_resource_limits_cpu_cores{namespace="default", container!="", pod=~"recipes-dary-project-release.*"}) by (pod) < 0.5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low CPU usage detected"
+          description: "CPU usage for one or more pods matching 'recipes-dary-project-release*' in namespace 'default' is below 10% of its limit."
