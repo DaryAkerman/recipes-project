@@ -1,9 +1,10 @@
 from flask import Flask, request, render_template, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-#test
+import os
+
 app = Flask(__name__)
-client = MongoClient('mongodb://root:your-root-password@mongo:27017/')
+client = MongoClient(os.getenv('MONGO_URI'))
 db = client.recipes_db
 recipes_collection = db.recipes
 
