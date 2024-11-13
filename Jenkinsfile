@@ -25,6 +25,7 @@ pipeline{
             steps {
                 script {
                     dockerImage = docker.build("${DOCKER_IMAGE}:latest", "--no-cache .")
+                    dockerImage.tag("${env.BUILD_NUMBER}")
                 }
             }
         }
@@ -47,11 +48,11 @@ pipeline{
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-creds') {
                         dockerImage.push("latest")
+                        dockerImage.push("${env.BUILD_NUMBER}")
                     }
                 }
             }
         }
-
         stage('Create merge request'){
             when {
                 not {
