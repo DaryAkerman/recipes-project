@@ -12,7 +12,7 @@ pipeline{
         DOCKER_IMAGE = 'winterzone2/recipes-project'
         GITHUB_API_URL = 'https://api.github.com'
         GITHUB_REPO = 'DaryAkerman/recipes-project'
-        GITHUB_TOKEN = credentials('github-creds')
+        GITHUB_TOKEN = credentials('github-token')
     }
 
     stages{
