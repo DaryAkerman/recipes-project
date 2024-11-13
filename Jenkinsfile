@@ -7,7 +7,6 @@ pipeline{
             defaultContainer 'ez-docker-helm-build'
         }
     }
-
     environment{
         DOCKER_IMAGE = 'winterzone2/recipes-project'
         GITHUB_API_URL = 'https://api.github.com'
