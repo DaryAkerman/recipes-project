@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
-client = MongoClient('mongodb://root:your-root-password@mongo-mongodb:27017/')
+client = MongoClient('mongodb://root:your-root-password@mongo:27017/')
 db = client.recipes_db
 recipes_collection = db.recipes
 
